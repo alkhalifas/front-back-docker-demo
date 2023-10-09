@@ -1,0 +1,5 @@
+.idea/
+node_modules
+.venv
+microservices-api/app/__pycache__
+microservices-api/app/__pycache__/*

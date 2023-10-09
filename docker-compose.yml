@@ -1,0 +1,10 @@
+version: "3"
+services:
+  ui-react:
+    build: ./ui-react
+    ports:
+      - "80:80"
+  microservices-api:
+    build: ./microservices-api
+    ports:
+      - "8080:8080"

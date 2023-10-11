@@ -6,4 +6,6 @@
 
     docker build -t ui-react
 
-    docker run -p 80:80 ui-react
+    docker run -p 3000:3000 ui-react
+
+    # Available on http://localhost:3000/

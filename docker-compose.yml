@@ -1,10 +1,17 @@
 version: "3"
 services:
   ui-react:
-    build: ./ui-react
+    build:
+      context: ./ui-react  # Path to the directory containing the React UI Dockerfile
     ports:
-      - "80:80"
+      - "3000:3000"  # Map host port 3000 to container port 3000 for the React UI
+
   microservices-api:
-    build: ./microservices-api
+    build:
+      context: ./microservices-api  # Path to the directory containing the FastAPI Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:8080"  # Map host port 8080 to container port 8080 for the FastAPI microservices
+
+networks:
+  frontend-backend-network:
+    driver: bridge

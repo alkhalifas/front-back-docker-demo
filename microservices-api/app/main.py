@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.local_items import router as item_router
+from app.database_items import router as database_item_router
 
 app = FastAPI()
 
@@ -16,3 +18,7 @@ app.add_middleware(
 def read_root():
     return {"message": "Welcome to the FastAPI backend!"}
 
+
+# Include the item_router in the main FastAPI app
+app.include_router(item_router)
+app.include_router(database_item_router)

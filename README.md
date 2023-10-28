@@ -1,0 +1,5 @@
+# Dockerized Full-Stack Web Application with React, FastAPI, and Redis
+
+This architecture showcases the development of a robust full-stack web application using modern technologies and containerization with Docker. The frontend of the application is built with React, a popular JavaScript library for building user interfaces. The backend is powered by FastAPI, a modern, fast (high-performance), web framework for building APIs with Python. Both the frontend and backend components are encapsulated within separate Docker containers, ensuring portability and ease of deployment.
+
+Redis, a high-performance in-memory data store, is utilized as the database, providing efficient data storage and retrieval. The entire application setup is orchestrated using Docker Compose, enabling seamless communication between the frontend, backend, and database components. This architecture enhances scalability, maintainability, and facilitates collaborative development, making it an ideal solution for modern web applications.

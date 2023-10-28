@@ -12,6 +12,17 @@ services:
     ports:
       - "8080:8080"  # Map host port 8080 to container port 8080 for the FastAPI microservices
 
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:
+
 networks:
   frontend-backend-network:
     driver: bridge

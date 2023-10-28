@@ -26,6 +26,11 @@ class QuestionCreate(BaseModel):
     text: str
     author: str
 
+class QuestionUpdate(BaseModel):
+    title: str
+    text: str
+    author: str
+    views: int
 
 class Question:
     def __init__(self, id: int, title: str, text: str, author: str):
@@ -52,7 +57,7 @@ async def create_question(question: QuestionCreate = Body(...)) -> QuestionRespo
     return QuestionResponse(**question_data)
 
 
-@router.get("/questions/", response_model=List[QuestionResponse])  # Specify response_model as a list of QuestionResponse
+@router.get("/questions/", response_model=List[QuestionResponse])
 async def get_questions() -> List[QuestionResponse]:
     # Retrieve questions from Redis (example)
     redis_keys = redis_client.keys("question:*")
@@ -71,8 +76,7 @@ async def get_questions() -> List[QuestionResponse]:
     return question_list
 
 @router.get("/questions/{question_id}", response_model=QuestionResponse)
-def get_question(question_id: int) -> QuestionResponse:
-    # Retrieve question from Redis by ID (example)
+async def get_question(question_id: int) -> QuestionResponse:
     redis_key = f"question:{question_id}"
     question_data = redis_client.hgetall(redis_key)
     if not question_data:
@@ -87,27 +91,53 @@ def get_question(question_id: int) -> QuestionResponse:
         views=int(question_data[b'views'])
     )
 
-# @router.put("/questions/{question_id}")
-# async def update_question(question_id: int, question: Question = Body(...)):
-#     # Update question in Redis (example)
-#     redis_key = f"question:{question_id}"
-#     if not redis_client.exists(redis_key):
-#         raise HTTPException(status_code=404, detail="Question not found")
-#     redis_client.hmset(redis_key, {
-#         "id": question.id,
-#         "title": question.title,
-#         "text": question.text,
-#         "author": question.author,
-#         "date": str(question.date),
-#         "views": question.views
-#     })
-#     return {"message": "Question updated successfully", "question": question}
+@router.put("/questions/{question_id}", response_model=QuestionResponse)
+async def update_question(question_id: int, question_update: QuestionUpdate = Body(...)) -> QuestionResponse:
+    redis_key = f"question:{question_id}"
+    if not redis_client.exists(redis_key):
+        raise HTTPException(status_code=404, detail="Question not found")
 
-# @router.delete("/questions/{question_id}")
-# async def delete_question(question_id: int):
-#     # Delete question from Redis (example)
-#     redis_key = f"question:{question_id}"
-#     if not redis_client.exists(redis_key):
-#         raise HTTPException(status_code=404, detail="Question not found")
-#     redis_client.delete(redis_key)
-#     return {"message": "Question deleted successfully"}
+    # Update question data in Redis
+    redis_client.hmset(redis_key, {
+        "id": question_id,
+        "title": question_update.title,
+        "text": question_update.text,
+        "author": question_update.author,
+        "date": str(datetime.datetime.now()),
+        "views": question_update.views
+    })
+
+    # Retrieve updated question data from Redis
+    updated_question_data = redis_client.hgetall(redis_key)
+    updated_question_response = QuestionResponse(
+        id=int(updated_question_data[b'id']),
+        title=updated_question_data[b'title'].decode('utf-8'),
+        text=updated_question_data[b'text'].decode('utf-8'),
+        author=updated_question_data[b'author'].decode('utf-8'),
+        date=updated_question_data[b'date'].decode('utf-8'),
+        views=int(updated_question_data[b'views'])
+    )
+
+    return updated_question_response
+
+@router.delete("/questions/{question_id}", response_model=QuestionResponse)
+async def delete_question(question_id: int) -> QuestionResponse:
+    redis_key = f"question:{question_id}"
+    question_data = redis_client.hgetall(redis_key)
+    if not question_data:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    # Delete question from Redis
+    redis_client.delete(redis_key)
+
+    # Construct response with deleted question data
+    deleted_question_response = QuestionResponse(
+        id=int(question_data[b'id']),
+        title=question_data[b'title'].decode('utf-8'),
+        text=question_data[b'text'].decode('utf-8'),
+        author=question_data[b'author'].decode('utf-8'),
+        date=question_data[b'date'].decode('utf-8'),
+        views=int(question_data[b'views'])
+    )
+
+    return deleted_question_response

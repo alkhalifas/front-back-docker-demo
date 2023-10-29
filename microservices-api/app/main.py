@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.local_items import router as item_router
 from app.database_items import router as database_item_router
+import redis
 
 app = FastAPI()
 

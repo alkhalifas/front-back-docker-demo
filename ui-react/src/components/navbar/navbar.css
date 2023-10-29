@@ -1,0 +1,13 @@
+/* styles.css */
+
+.navbar-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px; /* Optional: Add padding to the Toolbar */
+}
+
+.navbar-title {
+    text-decoration: none;
+    color: inherit;
+}

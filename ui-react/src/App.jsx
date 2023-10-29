@@ -1,51 +1,27 @@
 import React, { useEffect, useState } from "react";
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css'
+import Footer from "./containers/footer/footer.jsx";
+import Navbar from "./components/navbar/navbar.jsx";
+import Home from "./containers/home/home.jsx"
+import Login from "./containers/login/login.jsx"
+import Content from "./containers/content/content.jsx"
 
 function App() {
-  const [count, setCount] = useState(0)
-    const [data, setData] = useState(null);
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await fetch("http://localhost:8080/");
-                const result = await response.json();
-                setData(result);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }
-        fetchData();
-    }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-        <div>
-            <h1>Data from API:</h1>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
+        <Router>
+            <Navbar />
+
+            <Routes>
+                <Route path="/" exact element={<Home/>} />
+                <Route path="/login" element={<Login/>} />
+                <Route path="/content" element={<Content/>} />
+            </Routes>
+            <Footer />
+
+        </Router>
     </>
   )
 }
